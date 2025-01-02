@@ -24,7 +24,7 @@ void WIFI::begin() {
     Serial << endl << F("Connecting to WiFi");
 #endif
     WiFi.mode(WIFI_STA);
-    WiFi.begin("POLICJA: Posterunek", "1231231234");
+    WiFi.begin("xxxxxxxxxxx", "xxxxxxxxxxx");
     unsigned long timer = millis();
     while (connecting) {
       if (millis() - timer > WIFI_WAIT_TIME * 1000) {
