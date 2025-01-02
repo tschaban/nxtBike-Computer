@@ -1,2 +1,2 @@
 # eBike Computer
-Look for a specyfic hardware branch 
+Look for a specific hardware branch 
