@@ -1,0 +1,4 @@
+red - 5v
+black - gnd
+blue - tx
+yellow - rx
