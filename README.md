@@ -1,4 +1,4 @@
-# eBike Comuter
+# eBike Computer based on ESP8266
 ## Functionalities
 - Speedometer
 - Measuring: Electric Power, Ampers, Voltage
