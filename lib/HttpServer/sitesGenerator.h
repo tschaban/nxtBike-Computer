@@ -12,7 +12,7 @@
 #endif
 
 #include <CSS.h>
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
 #include <configuration.h>
 #include <dataAccess.h>
 #include <en_EN.h>

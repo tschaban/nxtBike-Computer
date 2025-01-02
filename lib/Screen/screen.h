@@ -71,14 +71,14 @@ private:
 
   NexText S1Status = NexText(0, 1, "S1Status");
 
-  NexVar S2MaxSpeed = NexVar(1, 1, "S2MaxSpeed");
-  NexVar S2AvgSpeed = NexVar(1, 2, "S2AvgSpeed");
-  NexVar S2Minutes = NexVar(1, 3, "S2Minutes");
-  NexVar S2DistTotal = NexVar(1, 4, "S2DistTotal");
-  NexVar S2BatLevel = NexVar(1, 5, "S2BatLevel");
-  NexVar S2Speed = NexVar(1, 6, "S2Speed");
-  NexVar S2BatVoltage = NexVar(1, 8, "S2BatVolt");
-  NexVar S2DistTrip = NexVar(1, 9, "S2DistTrip");
+  NexVariable S2MaxSpeed = NexVariable(1, 1, "S2MaxSpeed");
+  NexVariable S2AvgSpeed = NexVariable(1, 2, "S2AvgSpeed");
+  NexVariable S2Minutes = NexVariable(1, 3, "S2Minutes");
+  NexVariable S2DistTotal = NexVariable(1, 4, "S2DistTotal");
+  NexVariable S2BatLevel = NexVariable(1, 5, "S2BatLevel");
+  NexVariable S2Speed = NexVariable(1, 6, "S2Speed");
+  NexVariable S2BatVoltage = NexVariable(1, 8, "S2BatVolt");
+  NexVariable S2DistTrip = NexVariable(1, 9, "S2DistTrip");
 
   NexProgressBar S2SpeedProg = NexProgressBar(1, 7, "S2SpeedProg");
 };

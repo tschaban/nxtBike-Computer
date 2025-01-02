@@ -7,8 +7,8 @@
 #include "WProgram.h"
 #endif
 
-#include <ESP8266WebServer.h>
-#include <WiFiUdp.h>
+#include <WebServer.h>
+#include <Update.h>
 #include <dataAccess.h>
 #include <sitesGenerator.h>
 
@@ -22,12 +22,12 @@ struct SITEType {
   uint8_t rebootTime = 0;
 };
 
-class WEBSERVER {
+class HTTPSERVER {
 
 private:
   DATA Data;
 
-  ESP8266WebServer server;
+  WebServer server;
 
   HTTPCOMMANDType httpCommand;
   // Once HTTP API requet is recieved it's set to true
@@ -45,25 +45,23 @@ private:
   /* Methods get POST data (for saveing) */
 
 public:
-  WEBSERVER();
+  HTTPSERVER();
 
-  /* Method pushes HTML site from WebServer */
+  /* Method pushes HTML site from HTTPSERVER */
   void publishHTML(String page);
 
-  /* Method initialize WebServer and Updater server */
+  /* Method initialize HTTPSERVER and Updater server */
   void begin();
 
   /* Method listens for HTTP requests */
   void listener();
 
-  /* Method listens for onNotFound */
-  void onNotFound(ESP8266WebServer::THandlerFunction fn);
 
-  /* Method adds URL for listen */
-  void handle(const char *uri, ESP8266WebServer::THandlerFunction handler);
+  void onNotFound(WebServer::THandlerFunction fn);
+  void handle(const char *uri, WebServer::THandlerFunction handler);
   void handleFirmwareUpgrade(const char *uri,
-                             ESP8266WebServer::THandlerFunction handlerUpgrade,
-                             ESP8266WebServer::THandlerFunction handlerUpload);
+                             WebServer::THandlerFunction handlerUpgrade,
+                             WebServer::THandlerFunction handlerUpload);
 
   /* Method generate HTML side. It reads also data from HTTP requests arguments
    * and pass them to Configuration Panel class */

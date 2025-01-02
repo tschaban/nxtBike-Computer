@@ -1,61 +1,38 @@
 
-#include <LED.h>
-#include <Nextion.h>
-#include <WIFI.h>
-#include <dataAccess.h>
-#include <screen.h>
-#include <speedometer.h>
-#include <voltage.h>
-#include <webServer.h>
-#ifdef DEBUG
-#include <Streaming.h>
-#endif
+#include "firmware.h"
 
-DATA Data;
-SPEEDOMETER SpeedoMeter;
-SCREEN Screen;
-LED Led;
-WIFI AccessPoint;
-WEBSERVER WebServer;
 
-/* SPEEDOMETER  _________________________________ */
-void ICACHE_RAM_ATTR newImpulse() {
-  static uint32_t lastInterruptionTime = 0;
-  uint32_t interruptionTime = millis();
-  if (interruptionTime - lastInterruptionTime >
-      (uint32_t)SpeedoMeter.configuration.signalBouncing) {
-    SpeedoMeter.addImpulse();
-  }
-  lastInterruptionTime = interruptionTime;
+/* WEBERVER TO REFACTOR */
+
+/* Method handles favicon.ico request */
+void handleFavicon() {}
+
+/* Method handles all HTTP request */
+void handleHTTPRequests() { HttpServer.generate(); }
+void handleUpload() { HttpServer.generate(true); }
+
+void handleOnNotFound() {
+  String page = "<head><meta http-equiv=\"refresh\" content=\"0; "
+                "url=http://192.168.5.1/\" /></head><body><p>Opening "
+                "configuration site ...</p></body>";
+  HttpServer.publishHTML(page);
 }
 
-void speedometerEnabled(boolean enabled) {
-  if (enabled) {
-    attachInterrupt(digitalPinToInterrupt(SpeedoMeter.configuration.GPIO),
-                    newImpulse, RISING);
-  } else {
-    detachInterrupt(digitalPinToInterrupt(
-        digitalPinToInterrupt(SpeedoMeter.configuration.GPIO)));
-  }
+void handleDebug() {
+  String page = "";
+
+  page += Voltage.data.percent;
+  page += "<br>";
+  page += Voltage.data.voltage;
+
+  HttpServer.publishHTML(page);
 }
 
-/* VOLTAGE ________________________________ */
-VOLTAGE Voltage;
 
-/* SAVING DATA ____________________________ */
-uint32_t eventSpeedometterSaveCounter = millis();
 
-/* BACKUP DATA ____________________________ */
-uint32_t eventSpeedometterDataArchiveRestoreCounter = millis();
+/* END : WEBERVER TO REFACTOR */
 
-/* used to show time to save at spash screen */
-char timeToSaveText[4];
-uint8_t timeToSaveCounter = 0;
-uint8_t _timeToSaveCounter = 0;
-int16_t _timeToSaveCounterReal = 0;
-double lastSavedTotalSpeed;
 
-/* SETUP _________________________________ */
 
 void setup() {
   Serial.begin(115200);
@@ -63,7 +40,7 @@ void setup() {
 
   /* Loading default data */
 
-  if (LittleFS.begin()) {
+  if (LITTLEFS.begin()) {
 #ifdef DEBUG
     Serial << endl << F("INFO: File system: mounted");
 #endif
@@ -95,11 +72,11 @@ void setup() {
 
   lastSavedTotalSpeed = SpeedoMeter.data.distance.total;
 
-  WebServer.handle("/", handleHTTPRequests);
-  WebServer.handle("/favicon.ico", handleFavicon);
-  WebServer.handle("/debug", handleDebug);
-  WebServer.handleFirmwareUpgrade("/upgrade", handleHTTPRequests, handleUpload);
-  WebServer.begin();
+  HttpServer.handle("/", handleHTTPRequests);
+  HttpServer.handle("/favicon.ico", handleFavicon);
+  HttpServer.handle("/debug", handleDebug);
+  HttpServer.handleFirmwareUpgrade("/upgrade", handleHTTPRequests, handleUpload);
+  HttpServer.begin();
 
   Screen.set(lastScreen);
   Screen.showSyncStatus(SYNC_COMPLETED);
@@ -208,5 +185,5 @@ void loop() {
 
   Screen.listener();
   SpeedoMeter.timer(SpeedoMeter.data.speed.current > 0 ? true : false);
-  WebServer.listener();
+  HttpServer.listener();
 }

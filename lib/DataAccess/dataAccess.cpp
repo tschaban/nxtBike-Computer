@@ -14,7 +14,7 @@ SpeedometerDataType DATA::getSpeedometterData() {
   Serial << endl << F("File: ") << FILE_SPEEDOMETER;
 #endif
 
-  File speedometterFile = LittleFS.open(FILE_SPEEDOMETER, "r");
+  File speedometterFile = LITTLEFS.open(FILE_SPEEDOMETER, "r");
 
   if (speedometterFile) {
 #ifdef DEBUG
@@ -80,7 +80,7 @@ void DATA::saveSpeedometterData(SpeedometerDataType *data) {
   Serial << endl << F("File: ") << FILE_SPEEDOMETER;
 #endif
 
-  File speedometterFile = LittleFS.open(FILE_SPEEDOMETER, "w");
+  File speedometterFile = LITTLEFS.open(FILE_SPEEDOMETER, "w");
 
   if (speedometterFile) {
 #ifdef DEBUG
@@ -151,7 +151,7 @@ LCDScreenCurrentConfigurationType DATA::getCurrentScreen() {
   Serial << endl << F("File: ") << FILE_CURRENTSCREEN;
 #endif
 
-  File currentScreenFile = LittleFS.open(FILE_CURRENTSCREEN, "r");
+  File currentScreenFile = LITTLEFS.open(FILE_CURRENTSCREEN, "r");
 
   if (currentScreenFile) {
 #ifdef DEBUG
@@ -211,7 +211,7 @@ void DATA::saveCurrentScreen(LCDScreenCurrentConfigurationType *data) {
   Serial << endl << F("File: ") << FILE_CURRENTSCREEN;
 #endif
 
-  File currentScreenFile = LittleFS.open(FILE_CURRENTSCREEN, "w");
+  File currentScreenFile = LITTLEFS.open(FILE_CURRENTSCREEN, "w");
 
   if (currentScreenFile) {
 #ifdef DEBUG
@@ -257,7 +257,7 @@ void DATA::formatFileSystem() {
   Serial << endl << F("---------------- RESETTING DEVICE -----------------");
   Serial << endl << F("Formating: ");
 #endif
-  LittleFS.format();
+  LITTLEFS.format();
   delay(1000);
 #ifdef DEBUG
   Serial << F("DONE");
@@ -313,7 +313,7 @@ void DATA::createdBackup() {
     Serial << endl << F("File: ") << FILE_SPEEDOMETER_BACKUP;
 #endif
 
-    File speedometterFile = LittleFS.open(FILE_SPEEDOMETER_BACKUP, "w");
+    File speedometterFile = LITTLEFS.open(FILE_SPEEDOMETER_BACKUP, "w");
 
     if (speedometterFile) {
 #ifdef DEBUG
@@ -372,7 +372,7 @@ void DATA::restoreBackup() {
   Serial << endl << F("File: ") << FILE_SPEEDOMETER_BACKUP;
 #endif
 
-  File speedometterFile = LittleFS.open(FILE_SPEEDOMETER_BACKUP, "r");
+  File speedometterFile = LITTLEFS.open(FILE_SPEEDOMETER_BACKUP, "r");
 
   if (speedometterFile) {
 #ifdef DEBUG

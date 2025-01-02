@@ -11,20 +11,21 @@
 #include "WProgram.h"
 #endif
 
-#include <ESP8266WiFi.h>
-#include <WIFI-types.h>
+#include <WiFi.h>
+#include <WirelessNetwork-Types.h>
+#include <local-config.h>
 #ifdef DEBUG
 #include <Streaming.h>
 #endif
 
-class WIFI {
+class WirelessNetwork {
 
 private:
   NETWORKType networkConfiguration;
+  WiFiClass WirelessConnection;
 
 public:
-  /* Constructor: no actions */
-  WIFI();
+  WirelessNetwork();
 
   /* Sets connection parameters and host name. Must be invoked before connect
    * method */

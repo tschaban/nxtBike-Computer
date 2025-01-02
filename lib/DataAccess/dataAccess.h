@@ -13,7 +13,7 @@
 
 #include <ArduinoJson.h>
 #include <FS.h>
-#include <LittleFS.h>
+#include <LITTLEFS.h>
 #include <configuration.h>
 
 #ifdef DEBUG

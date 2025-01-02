@@ -1,8 +1,8 @@
 #ifndef _configuration_h
 #define _configuration_h
 
-#define FIRMWARE_NAME "NxtBike Firmware"
-#define FIRMWARE_VERSION "1.0 BETA 10"
+#define FIRMWARE_NAME "NxtBike Computer Firmware"
+#define FIRMWARE_VERSION "2.0 BETA 1"
 
 #define WIFI_WAIT_TIME 30 // 30 seconds
 #define WIFI_ACCESS_POINT 0

@@ -3,4 +3,6 @@
 .piolibdeps
 .clang_complete
 .gcc-flags.json
-sandpit
+.cache
+.vscode
+configuration/local-config.h
