@@ -6,18 +6,14 @@
 
 /* Method handles favicon.ico request */
 void handleFavicon() {}
-
-/* Method handles all HTTP request */
 void handleHTTPRequests() { HttpServer.generate(); }
 void handleUpload() { HttpServer.generate(true); }
-
 void handleOnNotFound() {
   String page = "<head><meta http-equiv=\"refresh\" content=\"0; "
                 "url=http://192.168.5.1/\" /></head><body><p>Opening "
                 "configuration site ...</p></body>";
   HttpServer.publishHTML(page);
 }
-
 void handleDebug() {
   String page = "";
 
@@ -31,6 +27,21 @@ void handleDebug() {
 
 
 /* END : WEBERVER TO REFACTOR */
+
+/* Refactor */
+
+void speedometerEnabled(boolean enabled) {
+  if (enabled) {
+    attachInterrupt(digitalPinToInterrupt(SpeedoMeter.configuration.GPIO),
+                    newImpulse, RISING);
+  } else {
+    detachInterrupt(digitalPinToInterrupt(
+        digitalPinToInterrupt(SpeedoMeter.configuration.GPIO)));
+  }
+}
+
+
+/* End Refactor */
 
 
 
