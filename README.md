@@ -1,2 +1,2 @@
-# nxtBike-Computer
-eBike computer
+# eBike Computer
+Look for a specyfic hardware branch 
