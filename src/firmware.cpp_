@@ -196,5 +196,5 @@ void loop() {
 
   Screen.listener();
   SpeedoMeter.timer(SpeedoMeter.data.speed.current > 0 ? true : false);
-  HttpServer.listener();
+ 
 }
