@@ -52,7 +52,7 @@ void setup()
   Msg->printBulletPoint(F("Mounting file system: "));
 #endif
 
-  boolean success = LITTLEFS.begin(true);
+  boolean success = LittleFS.begin(true);
 
 #ifdef DEBUG
   if (success)
@@ -60,7 +60,7 @@ void setup()
     Msg->printValue(F("OK"));
    /*
     Msg->printBulletPoint(F("Formatting Flash: "));
-    success = LITTLEFS.format();
+    success = LittleFS.format();
     if (success) {
       Msg->printValue(F("OK"));
     } else {

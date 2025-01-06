@@ -3,8 +3,8 @@
 
 
 #ifdef DEBUG
-#include <ESP-APP-Debugger.h>
-ESP_APP_Debugger *Msg = new ESP_APP_Debugger();
+#include <ESPAPP_SerialMessages.h>
+ESPAPP_SerialMessages *Msg = new ESPAPP_SerialMessages();
 //#include <Streaming.h>
 #endif
 
