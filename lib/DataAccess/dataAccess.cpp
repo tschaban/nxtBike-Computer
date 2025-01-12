@@ -24,32 +24,32 @@ SpeedometerDataType DATA::getSpeedometterData() {
     size_t size = speedometterFile.size();
     std::unique_ptr<char[]> buf(new char[size]);
     speedometterFile.readBytes(buf.get(), size);
-    StaticJsonBuffer<200> jsonBuffer;
-    JsonObject &root = jsonBuffer.parseObject(buf.get());
-    if (root.success()) {
+    StaticJsonDocument<200> doc;
+    DeserializationError error = deserializeJson(doc,buf.get());
+    if (error) {
 #ifdef DEBUG
-      root.printTo(Serial);
+      serializeJson(doc, Serial);
 #endif
 
-      _data.timer = root["timer"].as<unsigned int>();
-      _data.timeInMove = root["timeInMove"].as<unsigned int>();
-      _data.speed.max = root["speed"]["max"].as<double>();
-      _data.speed.avarage = root["speed"]["avarage"].as<double>();
-      _data.distance.total = root["distance"]["total"].as<double>();
-      _data.distance.current = root["distance"]["current"].as<double>();
+      _data.timer = doc["timer"].as<unsigned int>();
+      _data.timeInMove = doc["timeInMove"].as<unsigned int>();
+      _data.speed.max = doc["speed"]["max"].as<double>();
+      _data.speed.avarage = doc["speed"]["avarage"].as<double>();
+      _data.distance.total = doc["distance"]["total"].as<double>();
+      _data.distance.current = doc["distance"]["current"].as<double>();
 
 #ifdef DEBUG
       Serial << endl
              << F("INFO: JSON: Buffer size: ") << 400
-             << F(", actual JSON size: ") << jsonBuffer.size();
-      if (400 < jsonBuffer.size() + 10) {
+             << F(", actual JSON size: ") << doc.size();
+      if (400 < doc.size() + 10) {
         Serial << endl << F("WARN: Too small buffer size");
       }
 #endif
     }
 #ifdef DEBUG
     else {
-      Serial << F("ERROR: JSON not pharsed");
+      Serial << F("ERROR: JSON") << error.c_str();
     }
 #endif
 
@@ -87,21 +87,22 @@ void DATA::saveSpeedometterData(SpeedometerDataType *data) {
     Serial << F("success") << endl << F("INFO: Writing JSON: ");
 #endif
 
-    StaticJsonBuffer<400> jsonBuffer;
-    JsonObject &root = jsonBuffer.createObject();
-    JsonObject &jsonSpeed = root.createNestedObject("speed");
-    JsonObject &jsonDistance = root.createNestedObject("distance");
+    StaticJsonDocument<400> doc;
+    JsonObject root = doc.to<JsonObject>();
+    JsonObject jsonSpeed = root.createNestedObject("speed");
+    JsonObject jsonDistance = root.createNestedObject("distance");
 
-    root["timer"] = data->timer;
-    root["timeInMove"] = data->timeInMove;
+    doc["timer"] = data->timer;
+    doc["timeInMove"] = data->timeInMove;
     jsonSpeed["max"] = data->speed.max;
     jsonSpeed["avarage"] = data->speed.avarage;
     jsonDistance["current"] = data->distance.current;
     jsonDistance["total"] = data->distance.total;
 
-    root.printTo(speedometterFile);
+    //doc.printTo(speedometterFile);
+    serializeJson(doc, speedometterFile);
 #ifdef DEBUG
-    root.printTo(Serial);
+    serializeJson(doc, Serial);
 #endif
     speedometterFile.close();
 
@@ -109,9 +110,9 @@ void DATA::saveSpeedometterData(SpeedometerDataType *data) {
     Serial << endl
            << F("INFO: Data saved") << endl
            << F("INFO: JSON: Buffer size: ") << 400 << F(", actual JSON size: ")
-           << jsonBuffer.size();
+           << doc.size();
 
-    if (400 < jsonBuffer.size() + 10) {
+    if (400 < doc.size() + 10) {
       Serial << endl << F("WARN: Too small buffer size");
     }
 #endif
@@ -161,27 +162,27 @@ LCDScreenCurrentConfigurationType DATA::getCurrentScreen() {
     size_t size = currentScreenFile.size();
     std::unique_ptr<char[]> buf(new char[size]);
     currentScreenFile.readBytes(buf.get(), size);
-    StaticJsonBuffer<200> jsonBuffer;
-    JsonObject &root = jsonBuffer.parseObject(buf.get());
-    if (root.success()) {
+    StaticJsonDocument<200> doc;
+    DeserializationError error = deserializeJson(doc,buf.get());
+    if (error) {
 #ifdef DEBUG
-      root.printTo(Serial);
+      serializeJson(doc, Serial);
 #endif
-      _data.screenID = root["screenID"].as<unsigned int>();
-      _data.themeID = root["themeID"].as<unsigned int>();
+      _data.screenID = doc["screenID"].as<unsigned int>();
+      _data.themeID = doc["themeID"].as<unsigned int>();
 
 #ifdef DEBUG
       Serial << endl
              << F("INFO: JSON: Buffer size: ") << 200
-             << F(", actual JSON size: ") << jsonBuffer.size();
-      if (200 < jsonBuffer.size() + 10) {
+             << F(", actual JSON size: ") << doc.size();
+      if (200 < doc.size() + 10) {
         Serial << endl << F("WARN: Too small buffer size");
       }
 #endif
     }
 #ifdef DEBUG
     else {
-      Serial << F("ERROR: JSON not pharsed");
+      Serial << F("ERROR: JSON") << error.c_str();
     }
 #endif
 
@@ -218,15 +219,17 @@ void DATA::saveCurrentScreen(LCDScreenCurrentConfigurationType *data) {
     Serial << F("success") << endl << F("INFO: Writing JSON: ");
 #endif
 
-    StaticJsonBuffer<400> jsonBuffer;
-    JsonObject &root = jsonBuffer.createObject();
+    StaticJsonDocument<400> doc;
+    JsonObject root = doc.to<JsonObject>();
 
-    root["screenID"] = data->screenID;
-    root["themeID"] = data->themeID;
+    doc["screenID"] = data->screenID;
+    doc["themeID"] = data->themeID;
 
-    root.printTo(currentScreenFile);
+    //doc.printTo(currentScreenFile);
+    serializeJson(doc, currentScreenFile);
+    
 #ifdef DEBUG
-    root.printTo(Serial);
+    serializeJson(doc, Serial);
 #endif
     currentScreenFile.close();
 
@@ -234,9 +237,9 @@ void DATA::saveCurrentScreen(LCDScreenCurrentConfigurationType *data) {
     Serial << endl
            << F("INFO: Data saved") << endl
            << F("INFO: JSON: Buffer size: ") << 200 << F(", actual JSON size: ")
-           << jsonBuffer.size();
+           << doc.size();
 
-    if (200 < jsonBuffer.size() + 10) {
+    if (200 < doc.size() + 10) {
       Serial << endl << F("WARN: Too small buffer size");
     }
 #endif
@@ -320,21 +323,22 @@ void DATA::createdBackup() {
       Serial << F("success") << endl << F("INFO: Writing JSON: ");
 #endif
 
-      StaticJsonBuffer<400> jsonBuffer;
-      JsonObject &root = jsonBuffer.createObject();
-      JsonObject &jsonSpeed = root.createNestedObject("speed");
-      JsonObject &jsonDistance = root.createNestedObject("distance");
+      StaticJsonDocument<400> doc;
+      JsonObject root = doc.to<JsonObject>();
+      JsonObject jsonSpeed = root.createNestedObject("speed");
+      JsonObject jsonDistance = root.createNestedObject("distance");
 
-      root["timer"] = _data.timer;
-      root["timeInMove"] = _data.timeInMove;
+      doc["timer"] = _data.timer;
+      doc["timeInMove"] = _data.timeInMove;
       jsonSpeed["max"] = _data.speed.max;
       jsonSpeed["avarage"] = _data.speed.avarage;
       jsonDistance["current"] = _data.distance.current;
       jsonDistance["total"] = _data.distance.total;
 
-      root.printTo(speedometterFile);
+      //doc.printTo(speedometterFile);
+      serializeJson(doc, speedometterFile);
 #ifdef DEBUG
-      root.printTo(Serial);
+      serializeJson(doc, Serial);
 #endif
       speedometterFile.close();
 
@@ -342,9 +346,9 @@ void DATA::createdBackup() {
       Serial << endl
              << F("INFO: Data saved") << endl
              << F("INFO: JSON: Buffer size: ") << 400
-             << F(", actual JSON size: ") << jsonBuffer.size();
+             << F(", actual JSON size: ") << doc.size();
 
-      if (400 < jsonBuffer.size() + 10) {
+      if (400 < doc.size() + 10) {
         Serial << endl << F("WARN: Too small buffer size");
       }
 #endif
@@ -382,19 +386,19 @@ void DATA::restoreBackup() {
     size_t size = speedometterFile.size();
     std::unique_ptr<char[]> buf(new char[size]);
     speedometterFile.readBytes(buf.get(), size);
-    StaticJsonBuffer<200> jsonBuffer;
-    JsonObject &root = jsonBuffer.parseObject(buf.get());
-    if (root.success()) {
+    StaticJsonDocument<200> doc;
+    DeserializationError error = deserializeJson(doc,buf.get());
+    if (error) {
 #ifdef DEBUG
-      root.printTo(Serial);
+      serializeJson(doc, Serial);
 #endif
 
-      _data.timer = root["timer"].as<unsigned int>();
-      _data.timeInMove = root["timeInMove"].as<unsigned int>();
-      _data.speed.max = root["speed"]["max"].as<double>();
-      _data.speed.avarage = root["speed"]["avarage"].as<double>();
-      _data.distance.total = root["distance"]["total"].as<double>();
-      _data.distance.current = root["distance"]["current"].as<double>();
+      _data.timer = doc["timer"].as<unsigned int>();
+      _data.timeInMove = doc["timeInMove"].as<unsigned int>();
+      _data.speed.max = doc["speed"]["max"].as<double>();
+      _data.speed.avarage = doc["speed"]["avarage"].as<double>();
+      _data.distance.total = doc["distance"]["total"].as<double>();
+      _data.distance.current = doc["distance"]["current"].as<double>();
 
       if (_data.distance.total > SPEEDOMETER_DEFAULT_TOTAL_DISTANCE) {
         saveSpeedometterData(&_data);
@@ -403,15 +407,15 @@ void DATA::restoreBackup() {
 #ifdef DEBUG
       Serial << endl
              << F("INFO: JSON: Buffer size: ") << 400
-             << F(", actual JSON size: ") << jsonBuffer.size();
-      if (400 < jsonBuffer.size() + 10) {
+             << F(", actual JSON size: ") << doc.size();
+      if (400 < doc.size() + 10) {
         Serial << endl << F("WARN: Too small buffer size");
       }
 #endif
     }
 #ifdef DEBUG
     else {
-      Serial << F("ERROR: JSON not pharsed");
+      Serial << F("ERROR: JSON") << error.c_str();
     }
 #endif
 
